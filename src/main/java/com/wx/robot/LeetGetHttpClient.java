@@ -10,6 +10,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +51,12 @@ public class LeetGetHttpClient {
      */
     public void buildQuestionUrlAddress(Date date, QuestionInfo questionInfo) throws IOException {
         String title = "";
-        if (date.equals(new Date())) {
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String target = df.format(date);
+        String today = df.format(new Date());
+
+        if (target.equals(today)) {
             buildDailyQuestionTitleInfo(questionInfo);
             title = questionInfo.getTitle();
         } else {
