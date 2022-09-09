@@ -217,7 +217,7 @@ public class LeetGetHttpClient {
     }
 
 
-    public QuestionInfo getQuestion(String prompt, Date date) throws IOException {
+    public QuestionInfo getQuestion(String prompt, Date date) throws Exception {
         QuestionInfo questionInfo = new QuestionInfo();
         questionInfo.setPrompt(prompt);
         questionInfo.setAddressDescription(ADDRESS_DESCRIPTION);
@@ -236,7 +236,13 @@ public class LeetGetHttpClient {
         System.out.println("题目内容 格式化完成");
         // 将格式化后的内容转成 QuestionInfo
         System.out.println("开始将内容封装成 questionInfo...");
-        ContentBody body = JSONObject.parseObject(formatContent, ContentBody.class);
+        ContentBody body = null;
+        try {
+            body = JSONObject.parseObject(formatContent, ContentBody.class);
+        } catch (Exception e) {
+            throw new Exception("封装出错: " + e.getMessage());
+        }
+        System.out.println("封装 questionInfo 完成");
         Question question = body.getData().getQuestion();
 
         questionInfo.setZhTitle(question.getTranslatedTitle());

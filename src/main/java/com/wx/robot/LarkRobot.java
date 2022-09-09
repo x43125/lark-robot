@@ -61,9 +61,9 @@ public class LarkRobot {
                 resultBuffer.append(line);
             }
             return resultBuffer.toString();
+        } else {
+            throw new IOException(responseCode + " : " + con.getResponseMessage());
         }
-
-        return "";
     }
 
     public String buildRichContent(QuestionInfo questionInfo) {

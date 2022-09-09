@@ -94,22 +94,37 @@ public class LeetCodeDailyQuestionRobot {
         timing(nowTime, executeTime, new TimerTask() {
             @Override
             public void run() {
-                String printQuestionInfo = failLog;
+                String printQuestionInfo = "";
+                QuestionInfo questionInfo = null;
                 try {
                     // 获取题目
-                    QuestionInfo questionInfo = leetGetHttpClient.getQuestion(prompt, new Date());
-                    // 将questionInfo转成字符串准备发送
-                    printQuestionInfo = larkRobot.buildPrintContent(questionInfo);
-                    System.out.println(successLog);
-                } catch (IOException e) {
+                    questionInfo = leetGetHttpClient.getQuestion(prompt, new Date());
+                } catch (Exception e) {
                     System.out.println(failLog + ": " + e.getMessage());
+                    printQuestionInfo = failLog + ": " + e.getMessage();
                 }
 
-                try {
-                    String result = larkRobot.sendRequest(larkRobotUrl, requestMethod, printQuestionInfo);
-                    System.out.println(dateFormat.format(new Date()) + " ===== 发送完成 ==== 返回值 ====" + result);
-                } catch (IOException e) {
-                    System.out.println("发送失败: " + e.getMessage());
+                if (questionInfo == null) {
+                    try {
+                        String result = larkRobot.sendRequest(larkRobotUrl, requestMethod, printQuestionInfo);
+                        System.out.println(dateFormat.format(new Date()) + " ===== 发送完成 ==== 返回值 ====" + result);
+                    } catch (IOException e) {
+                        System.out.println("发送失败: " + e.getMessage());
+                    }
+                } else {
+                    try {
+                        // 将questionInfo转成字符串准备发送
+                        printQuestionInfo = larkRobot.buildPrintContent(questionInfo);
+                        System.out.println(successLog);
+                    } catch (Exception e) {
+                        printQuestionInfo = e.getMessage();
+                    }
+                    try {
+                        String result = larkRobot.sendRequest(larkRobotUrl, requestMethod, printQuestionInfo);
+                        System.out.println(dateFormat.format(new Date()) + " ===== 发送完成 ==== 返回值 ====" + result);
+                    } catch (IOException e) {
+                        System.out.println("发送失败: " + e.getMessage());
+                    }
                 }
             }
         });
